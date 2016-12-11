@@ -1,0 +1,3 @@
+// ACTION TYPES
+
+export const SET_LYRICS_TEXT = 'SET_LYRICS_TEXT';
