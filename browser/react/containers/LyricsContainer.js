@@ -1,57 +1,60 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import store from '../store';
 import Lyrics from '../components/Lyrics';
-import { getLyricsThunk } from '../reducers/lyricsTextReducer'
 
-export default class LyricsContainer extends Component {
+import {searchLyrics} from '../action-creators/lyrics';
 
-	constructor(props) {
-		super(props);
-		const { lyricsText } = store.getState().lyricsText;
-		this.state = { 
-			lyricsText, 
-			artistInput: '', 
-			songInput: '' 
-		}
+export default class extends Component {
 
-		this.handlers = {
-			handleArtistInput: this.handleArtistInput.bind(this),
-			handleSongInput: this.handleSongInput.bind(this),
-			handleSubmit: this.handleSubmit.bind(this)
-		}
-	}
+  constructor() {
 
-	componentDidMount() {
-		this.unsubscribe = store.subscribe(()=>{
-			const { lyricsText } = store.getState();
-			this.setState({ lyricsText });
-		})
-	}
+    super();
 
-	componentWillUnmount() {
-		this.unsubscribe();
-	}
+    this.state = Object.assign({
+      artistQuery: '',
+      songQuery: ''
+    }, store.getState());
 
-	handleArtistInput(evt) {
-		this.setState({ artistInput: evt.target.value })
-	}
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleArtistInput = this.handleArtistInput.bind(this);
+    this.handleSongInput = this.handleSongInput.bind(this);
 
-	handleSongInput(evt) {
-		this.setState({ songInput: evt.target.value })
-	}
+  }
 
-	handleSubmit(evt) {
-		evt.preventDefault();
-		const artistName = this.state.artistInput;
-		const songName = this.state.songInput;
-		const thunk = getLyricsThunk(artistName, songName);
-		store.dispatch(thunk);
-	}
+  componentDidMount() {
+    this.unsubscribe = store.subscribe(() => {
+      this.setState(store.getState());
+    });
+  }
 
-	render() {
-		return (
-			<Lyrics {...this.state} {...this.handlers} />
-		)
-	}
+  handleArtistInput(artist) {
+    this.setState({ artistQuery: artist });
+  }
+
+  handleSongInput(song) {
+    this.setState({ songQuery: song });
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+    if (this.state.artistQuery && this.state.songQuery) {
+      store.dispatch(searchLyrics(this.state.artistQuery, this.state.songQuery));
+    }
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+
+  render() {
+    return (
+      <Lyrics
+        {...this.state}
+        handleChange={this.handleChange}
+        setArtist={this.handleArtistInput}
+        setSong={this.handleSongInput}
+        handleSubmit={this.handleSubmit} />
+    );
+  }
 
 }

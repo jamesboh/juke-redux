@@ -1,44 +1,45 @@
 import React from 'react';
 
-const mt2 = { marginTop: '20px' };
-const my1 = { marginTop: '10px', marginBottom: '10px'}
+export default function (props) {
 
-export default function Lyrics ({ 
-  	handleSubmit, 
-  	handleArtistInput, 
-  	handleSongInput, 
-  	artistInput, 
-  	songInput,
-  	lyricsText
-}) {
+  const text = props.lyrics.text;
+  const artistQuery = props.artistQuery;
+  const songQuery = props.songQuery;
+  const handleSubmit = props.handleSubmit;
+
+  const artistChange = e => props.setArtist(e.target.value);
+  const songChange = e => props.setSong(e.target.value);
+
   return (
-    <div id="lyrics">
-      <form onSubmit={handleSubmit} style={mt2}>
-        <div className="form-group">
-        	<div style={my1}>
-        		<label>Artist</label>
-        		<input 
-        			className="form-control"
-        			type="text" 
-        			value={artistInput} 
-        			placeholder="Artist" 
-        			onChange={handleArtistInput}
-        		/>
-        	</div>
-          	<div style={my1}>
-          		<label>Song Name</label>
-          		<input 
-          			className="form-control"
-          			type="text" 
-          			value={songInput} 
-          			placeholder="Song" 
-          			onChange={handleSongInput}/>
-          	</div>
+    <div style={{marginTop: '20px'}}>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group row">
+          <div className="col-md-6 col-xs-12">
+            <label className="col-xs-2 control-label">Artist</label>
+            <input
+              className="form-control"
+              type="text"
+              value={artistQuery}
+              placeholder="Enter an artist name"
+              onChange={artistChange}
+            />
+          </div>
+          <div className="col-md-6 col-xs-12">
+            <label className="col-xs-2 control-label">Song</label>
+            <input
+              className="form-control"
+              type="text"
+              value={songQuery}
+              placeholder="Enter a song name"
+              onChange={songChange}
+            />
+          </div>
         </div>
-        <pre>{lyricsText || 'Search above!'}</pre>
-        <button className="btn btn-success" type="submit">Search for Lyrics</button>
+        <pre>{text || 'Search above!'}</pre>
+        <button type="submit" className="btn btn-success">
+          Search for Lyrics
+        </button>
       </form>
     </div>
   );
-
 }
